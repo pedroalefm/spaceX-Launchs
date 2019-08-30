@@ -7,7 +7,9 @@ import Style from './HomeScreenStyle'
 
 import LaunchTopCard from '../../Components/LaunchTopCard'
 import LaunchCard from '../../Components/LaunchCard'
+import LaunchCardError from '../../Components/LaunchCardError'
 
+import _ from 'lodash'
 import axios from 'axios'
 
 const HomeScreen = (props) => {
@@ -15,10 +17,21 @@ const HomeScreen = (props) => {
   const [lastLaunch, setLastLaunch] = useState({})
   const [launchs, setLaunchs] = useState({})
   const [search, setSearch] = useState('')
+  const [searchResult, setSearchResult] = useState([])
 
   useEffect(() => {
     fetchLaunch()
   }, [])
+
+  useEffect(() => {
+    const query = search.toLowerCase()
+    const result = _.filter(launchs, (launch) => {
+      if (launch.mission_name.toLowerCase().includes(query) && query != '') {
+        return true
+      }
+    })
+    setSearchResult(result)
+  }, [search])
 
   const fetchLaunch = async () => {
     const urlLaunch = 'https://api.spacexdata.com/v3/launches'
@@ -40,10 +53,22 @@ const HomeScreen = (props) => {
         <ActivityIndicator size="large" color="#fff" />
       ) : (
         <View>
-          <View>
-            <Text style={Style.lastTitle}>Último lançamento</Text>
-            <LaunchTopCard launch={lastLaunch} />
-          </View>
+          {search ? (
+            <View>
+              <Text style={Style.lastTitle}>Resultado</Text>
+              {console.log(searchResult)}
+              {searchResult.length > 0 ? (
+                <LaunchTopCard launch={searchResult[0]} />
+              ) : (
+                <LaunchCardError />
+              )}
+            </View>
+          ) : (
+            <View>
+              <Text style={Style.lastTitle}>Último lançamento</Text>
+              <LaunchTopCard launch={lastLaunch} />
+            </View>
+          )}
           <Text style={Style.lastTitle}>Lançamentos</Text>
           <View>
             <FlatList
