@@ -16,7 +16,7 @@ export default StyleSheet.create({
   about: {
     alignSelf: 'flex-end',
     marginTop: 2,
-    color: '#383838',
+    color: Colors.green,
     fontSize: 14,
     fontWeight: 'bold',
   },

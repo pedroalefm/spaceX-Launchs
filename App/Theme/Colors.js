@@ -5,4 +5,5 @@ export default {
   success: '#28a745',
   error: '#dc3545',
   background: '#383838',
+  green: '#0C6D57',
 }

@@ -67,7 +67,6 @@ const HomeScreen = (props) => {
 
   return (
     <View style={Style.container}>
-      {console.log(props)}
       <SearchBar placeholder="Nome do lançamento..." onChangeText={setSearch} value={search} />
       {loading ? (
         <ActivityIndicator size="large" color="#fff" />
