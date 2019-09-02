@@ -37,7 +37,13 @@ const DetailScreen = (props) => {
             style={{ alignSelf: 'stretch', height: 200 }}
           />
           <ScrollView style={Style.scroll}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                props.navigation.navigate('Article', {
+                  articleLink: launch.links.article_link,
+                })
+              }
+            >
               <Text style={Style.articleText}>Abrir artigo</Text>
             </TouchableOpacity>
             <Text style={Style.detailText}>{launch && launch.details}</Text>
