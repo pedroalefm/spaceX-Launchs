@@ -2,6 +2,8 @@ import React from 'react'
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 import { Card } from 'react-native-elements'
 import Style from './LaunchCardStyle'
+import { withNavigation } from 'react-navigation'
+
 const LaunchTopCard = (props) => {
   return (
     <Card
@@ -17,10 +19,12 @@ const LaunchTopCard = (props) => {
       <Text numberOfLines={3}>
         {props.launch.details ? props.launch.details : 'Lançamento sem descrição'}
       </Text>
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => props.navigation.push('DetailScreen', { launch: props.launch })}
+      >
         <Text style={Style.about}>Saber mais</Text>
       </TouchableOpacity>
     </Card>
   )
 }
-export default LaunchTopCard
+export default withNavigation(LaunchTopCard)

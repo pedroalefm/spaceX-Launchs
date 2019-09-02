@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 import { Card } from 'react-native-elements'
 import Style from './LaunchCardStyle'
+import { withNavigation } from 'react-navigation'
+
 const LaunchCard = (props) => {
   return (
     <View style={Style.card}>
@@ -13,12 +15,13 @@ const LaunchCard = (props) => {
         titleNumberOfLines={1}
         titleStyle={Style.miniCardTittle}
       >
-        {console.log(props)}
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => props.navigation.push('DetailScreen', { launch: props.launch })}
+        >
           <Text style={Style.about}>Saber mais</Text>
         </TouchableOpacity>
       </Card>
     </View>
   )
 }
-export default LaunchCard
+export default withNavigation(LaunchCard)

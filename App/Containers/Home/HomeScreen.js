@@ -9,23 +9,40 @@ import LaunchTopCard from '../../Components/LaunchTopCard'
 import LaunchCard from '../../Components/LaunchCard'
 import LaunchCardError from '../../Components/LaunchCardError'
 
+import { Creators as LaunchActions } from '../../Store/Ducks/launchs'
+import { Creators as LastLaunchActions } from '../../Store/Ducks/lastLaunch'
+
+import { bindActionCreators } from 'redux'
+
 import _ from 'lodash'
 import axios from 'axios'
 
 const HomeScreen = (props) => {
-  const [loading, setLoading] = useState(false)
-  const [lastLaunch, setLastLaunch] = useState({})
-  const [launchs, setLaunchs] = useState({})
   const [search, setSearch] = useState('')
   const [searchResult, setSearchResult] = useState([])
 
+  const [loading, setLoading] = useState(false)
+  const [lastLaunch, setLastLaunch] = useState({})
+  const [launchs, setLaunchs] = useState([])
+
+  const [launchState, setLaunchState] = useState({
+    launchs: [],
+    lastLaunch: {},
+  })
+
   useEffect(() => {
-    fetchLaunch()
+    setLoading(true)
+    if (props.launchs.length > 0 && props.lastLaunch) {
+      setLaunchState({ lastLaunch: props.lastLaunch, launchs: props.launchs })
+      setLoading(false)
+    } else {
+      fetchLaunch()
+    }
   }, [])
 
   useEffect(() => {
     const query = search.toLowerCase()
-    const result = _.filter(launchs, (launch) => {
+    const result = _.filter(launchState.launchs, (launch) => {
       if (launch.mission_name.toLowerCase().includes(query) && query != '') {
         return true
       }
@@ -36,18 +53,21 @@ const HomeScreen = (props) => {
   const fetchLaunch = async () => {
     const urlLaunch = 'https://api.spacexdata.com/v3/launches'
     const urlLastLaunch = 'https://api.spacexdata.com/v3/launches/latest'
-    setLoading(true)
-    await axios.get(urlLastLaunch).then((res) => {
-      setLastLaunch(res.data)
+    const lastLaunch = await axios.get(urlLastLaunch).then((res) => {
+      return res.data
     })
-    await axios.get(urlLaunch).then((res) => {
-      setLaunchs(res.data)
+    const launchs = await axios.get(urlLaunch).then((res) => {
+      return res.data
     })
+    setLaunchState({ lastLaunch: lastLaunch, launchs: launchs })
+    props.addLaunch.addLaunchs(launchs)
+    props.addLastLaunch.addLastLaunch(lastLaunch)
     setLoading(false)
   }
 
   return (
     <View style={Style.container}>
+      {console.log(props)}
       <SearchBar placeholder="Nome do lançamento..." onChangeText={setSearch} value={search} />
       {loading ? (
         <ActivityIndicator size="large" color="#fff" />
@@ -56,7 +76,6 @@ const HomeScreen = (props) => {
           {search ? (
             <View>
               <Text style={Style.lastTitle}>Resultado</Text>
-              {console.log(searchResult)}
               {searchResult.length > 0 ? (
                 <LaunchTopCard launch={searchResult[0]} />
               ) : (
@@ -66,14 +85,14 @@ const HomeScreen = (props) => {
           ) : (
             <View>
               <Text style={Style.lastTitle}>Último lançamento</Text>
-              <LaunchTopCard launch={lastLaunch} />
+              <LaunchTopCard launch={launchState.lastLaunch} />
             </View>
           )}
           <Text style={Style.lastTitle}>Lançamentos</Text>
           <View>
             <FlatList
               horizontal
-              data={launchs}
+              data={launchState.launchs}
               renderItem={({ item }) => <LaunchCard launch={item} />}
             />
           </View>
@@ -83,4 +102,19 @@ const HomeScreen = (props) => {
   )
 }
 
-export default HomeScreen
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addLaunch: bindActionCreators(LaunchActions, dispatch),
+    addLastLaunch: bindActionCreators(LastLaunchActions, dispatch),
+  }
+}
+
+const mapStateToProps = (state) => ({
+  launchs: state.launchs,
+  lastLaunch: state.last,
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HomeScreen)

@@ -1,15 +1,15 @@
 import { createActions, createReducer } from 'reduxsauce'
 
 export const { Types, Creators } = createActions({
-  addLaunchs: ['launchs'],
+  addLastLaunch: ['last'],
 })
 
-const INITIAL_STATE = []
+const INITIAL_STATE = {}
 
 const add = (state = INITIAL_STATE, action) => {
-  return action.launchs
+  return action.last
 }
 
 export default createReducer(INITIAL_STATE, {
-  [Types.ADD_LAUNCHS]: add,
+  [Types.ADD_LAST_LAUNCH]: add,
 })

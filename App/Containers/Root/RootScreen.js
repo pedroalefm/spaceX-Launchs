@@ -26,7 +26,4 @@ RootScreen.propTypes = {
 
 const mapStateToProps = (state) => ({})
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RootScreen)
+export default connect(mapStateToProps)(RootScreen)
