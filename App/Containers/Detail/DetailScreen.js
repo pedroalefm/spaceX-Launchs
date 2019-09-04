@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
 import Style from './DetailScreenStyle'
 import Video from 'react-native-video'
 import YouTube from 'react-native-youtube'
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 const DetailScreen = (props) => {
   const [launch, setLaunch] = useState({})
@@ -24,8 +25,10 @@ const DetailScreen = (props) => {
 
   return (
     <View style={Style.container}>
+      <TouchableOpacity onPress={() => props.navigation.navigate('MainScreen')}>
+        <Icon name="arrow-left" size={30} color="#fff" style={Style.backBtn} />
+      </TouchableOpacity>
       <View style={Style.body}>
-        {console.log(launch)}
         <Text style={Style.title}>{launch && launch.mission_name}</Text>
         <View style={Style.detail}>
           <YouTube
@@ -37,15 +40,17 @@ const DetailScreen = (props) => {
             style={{ alignSelf: 'stretch', height: 200 }}
           />
           <ScrollView style={Style.scroll}>
-            <TouchableOpacity
-              onPress={() =>
-                props.navigation.navigate('Article', {
-                  articleLink: launch.links.article_link,
-                })
-              }
-            >
-              <Text style={Style.articleText}>Abrir artigo</Text>
-            </TouchableOpacity>
+            {launch.links && (
+              <TouchableOpacity
+                onPress={() =>
+                  props.navigation.navigate('Article', {
+                    articleLink: launch.links.article_link,
+                  })
+                }
+              >
+                <Text style={Style.articleText}>Abrir artigo</Text>
+              </TouchableOpacity>
+            )}
             <Text style={Style.detailText}>{launch && launch.details}</Text>
           </ScrollView>
         </View>

@@ -7,8 +7,12 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
+  backBtn: {
+    marginLeft: 10,
+    marginTop: 10,
+  },
   body: {
-    marginTop: 80,
+    marginTop: 45,
     backgroundColor: '#fff',
     margin: 20,
     borderRadius: 8,
